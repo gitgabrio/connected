@@ -95,6 +95,20 @@
         </executions>
       </plugin>
 
+      <plugin>
+        <groupId>net.cardosi</groupId>
+        <artifactId>j2cl-maven-plugin</artifactId>
+        <version>0.2-SNAPSHOT</version>
+        <configuration>
+          <bytecodeClasspath>${java-classpath}:${project.build.directory}/dependency/jre.jar:${project.build.directory}/dependency/gwt-internal-annotations.jar</bytecodeClasspath>
+          <j2clClasspath>${project.build.directory}/dependency/bootstrap.js.zip:${project.build.directory}/dependency/jre.js.zip</j2clClasspath>
+          <outputJsPathDir>out</outputJsPathDir>
+          <sourceDir>src/main/java</sourceDir>
+          <jsZipCacheDir>jsZipCache</jsZipCacheDir>
+          <entrypoint>com.vertispan.draw.connected.client.FlowChartEntryPoint</entrypoint>
+        </configuration>
+      </plugin>
+
     </plugins>
 
   </build>
@@ -176,49 +190,49 @@
 
             </executions>
           </plugin>
-          <plugin>
-            <groupId>org.codehaus.mojo</groupId>
-            <artifactId>exec-maven-plugin</artifactId>
-            <version>1.6.0</version>
-            <executions>
-              <execution>
-                <id>run-devmode</id>
-                <phase>process-classes</phase>
-                <goals>
-                  <goal>java</goal>
-                </goals>
-              </execution>
-            </executions>
-            <configuration>
-              <includeProjectDependencies>false</includeProjectDependencies>
-              <includePluginDependencies>true</includePluginDependencies>
-              <includeProjectDependencies>false</includeProjectDependencies>
-              <mainClass>com.vertispan.j2cl.DevMode</mainClass>
-              <arguments>
-                <argument>-classpath</argument>
-                <argument>${java-classpath}:${project.build.directory}/dependency/jre.jar:${project.build.directory}/dependency/gwt-internal-annotations.jar</argument>
-                <argument>-jsClasspath</argument>
-                <argument>${project.build.directory}/dependency/bootstrap.js.zip:${project.build.directory}/dependency/jre.js.zip</argument>
-                <argument>-out</argument>
-                <argument>out</argument>
-                <argument>-src</argument>
-                <argument>src/main/java</argument>
-                <argument>-jsZipCache</argument>
-                <argument>jsZipCache</argument>
-                <argument>-entrypoint</argument>
-                <argument>com.vertispan.draw.connected.client.FlowChartEntryPoint</argument>
+          <!--<plugin>-->
+            <!--<groupId>org.codehaus.mojo</groupId>-->
+            <!--<artifactId>exec-maven-plugin</artifactId>-->
+            <!--<version>1.6.0</version>-->
+            <!--<executions>-->
+              <!--<execution>-->
+                <!--<id>run-devmode</id>-->
+                <!--<phase>process-classes</phase>-->
+                <!--<goals>-->
+                  <!--<goal>java</goal>-->
+                <!--</goals>-->
+              <!--</execution>-->
+            <!--</executions>-->
+            <!--<configuration>-->
+              <!--<includeProjectDependencies>false</includeProjectDependencies>-->
+              <!--<includePluginDependencies>true</includePluginDependencies>-->
+              <!--<includeProjectDependencies>false</includeProjectDependencies>-->
+              <!--<mainClass>com.vertispan.j2cl.DevMode</mainClass>-->
+              <!--<arguments>-->
+                <!--<argument>-classpath</argument>-->
+                <!--<argument>${java-classpath}:${project.build.directory}/dependency/jre.jar:${project.build.directory}/dependency/gwt-internal-annotations.jar</argument>-->
+                <!--<argument>-jsClasspath</argument>-->
+                <!--<argument>${project.build.directory}/dependency/bootstrap.js.zip:${project.build.directory}/dependency/jre.js.zip</argument>-->
+                <!--<argument>-out</argument>-->
+                <!--<argument>out</argument>-->
+                <!--<argument>-src</argument>-->
+                <!--<argument>src/main/java</argument>-->
+                <!--<argument>-jsZipCache</argument>-->
+                <!--<argument>jsZipCache</argument>-->
+                <!--<argument>-entrypoint</argument>-->
+                <!--<argument>com.vertispan.draw.connected.client.FlowChartEntryPoint</argument>-->
 
-              </arguments>
-            </configuration>
-            <dependencies>
-              <dependency>
-                <groupId>com.vertispan.j2cl</groupId>
-                <artifactId>build-tools</artifactId>
-                <version>0.1-SNAPSHOT</version>
-                <type>jar</type>
-              </dependency>
-            </dependencies>
-          </plugin>
+              <!--</arguments>-->
+            <!--</configuration>-->
+            <!--<dependencies>-->
+              <!--<dependency>-->
+                <!--<groupId>com.vertispan.j2cl</groupId>-->
+                <!--<artifactId>build-tools</artifactId>-->
+                <!--<version>0.1-SNAPSHOT</version>-->
+                <!--<type>jar</type>-->
+              <!--</dependency>-->
+            <!--</dependencies>-->
+          <!--</plugin>-->
         </plugins>
       </build>
     </profile>
