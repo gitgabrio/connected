@@ -96,9 +96,77 @@
       </plugin>
 
       <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <version>3.0.2</version>
+        <executions>
+          <execution>
+            <id>build-java-classpath</id>
+            <phase>process-classes</phase>
+            <goals>
+              <goal>build-classpath</goal>
+            </goals>
+            <configuration>
+              <includeTypes>jar</includeTypes>
+              <outputProperty>java-classpath</outputProperty>
+            </configuration>
+          </execution>
+          <execution>
+            <id>copy-bootstrap</id>
+            <goals>
+              <goal>copy</goal>
+            </goals>
+            <configuration>
+              <!--<artifact>com.vertispan.j2cl:bootstrap:0.1-SNAPSHOT:zip:jszip</artifact>-->
+              <artifactItems>
+                <artifactItem>
+                  <groupId>com.vertispan.j2cl</groupId>
+                  <artifactId>jre</artifactId>
+                  <version>0.1-SNAPSHOT</version>
+                  <classifier>jszip</classifier>
+                  <type>zip</type>
+                  <destFileName>jre.js.zip</destFileName>
+                </artifactItem>
+                <artifactItem>
+                  <groupId>com.vertispan.j2cl</groupId>
+                  <artifactId>jre</artifactId>
+                  <version>0.1-SNAPSHOT</version>
+                  <destFileName>jre.jar</destFileName>
+                </artifactItem>
+                <artifactItem>
+                  <groupId>com.vertispan.j2cl</groupId>
+                  <artifactId>gwt-internal-annotations</artifactId>
+                  <version>0.1-SNAPSHOT</version>
+                  <destFileName>gwt-internal-annotations.jar</destFileName>
+                </artifactItem>
+                <artifactItem>
+                  <groupId>com.vertispan.j2cl</groupId>
+                  <artifactId>bootstrap</artifactId>
+                  <version>0.1-SNAPSHOT</version>
+                  <classifier>jszip</classifier>
+                  <type>zip</type>
+                  <destFileName>bootstrap.js.zip</destFileName>
+                </artifactItem>
+              </artifactItems>
+            </configuration>
+          </execution>
+
+        </executions>
+      </plugin>
+
+      <plugin>
         <groupId>net.cardosi</groupId>
         <artifactId>j2cl-maven-plugin</artifactId>
         <version>0.2-SNAPSHOT</version>
+        <executions>
+          <execution>
+            <id>run-devmode</id>
+            <phase>process-classes</phase>
+            <goals>
+              <goal>build</goal>
+            </goals>
+          </execution>
+        </executions>
         <configuration>
           <bytecodeClasspath>${java-classpath}:${project.build.directory}/dependency/jre.jar:${project.build.directory}/dependency/gwt-internal-annotations.jar</bytecodeClasspath>
           <j2clClasspath>${project.build.directory}/dependency/bootstrap.js.zip:${project.build.directory}/dependency/jre.js.zip</j2clClasspath>
@@ -132,64 +200,64 @@
       <build>
         <defaultGoal>process-classes</defaultGoal>
         <plugins>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-dependency-plugin</artifactId>
-            <version>3.0.2</version>
-            <executions>
-              <execution>
-                <id>build-java-classpath</id>
-                <phase>process-classes</phase>
-                <goals>
-                  <goal>build-classpath</goal>
-                </goals>
-                <configuration>
-                  <includeTypes>jar</includeTypes>
-                  <outputProperty>java-classpath</outputProperty>
-                </configuration>
-              </execution>
-              <execution>
-                <id>copy-bootstrap</id>
-                <goals>
-                  <goal>copy</goal>
-                </goals>
-                <configuration>
-                  <!--<artifact>com.vertispan.j2cl:bootstrap:0.1-SNAPSHOT:zip:jszip</artifact>-->
-                  <artifactItems>
-                    <artifactItem>
-                      <groupId>com.vertispan.j2cl</groupId>
-                      <artifactId>jre</artifactId>
-                      <version>0.1-SNAPSHOT</version>
-                      <classifier>jszip</classifier>
-                      <type>zip</type>
-                      <destFileName>jre.js.zip</destFileName>
-                    </artifactItem>
-                    <artifactItem>
-                      <groupId>com.vertispan.j2cl</groupId>
-                      <artifactId>jre</artifactId>
-                      <version>0.1-SNAPSHOT</version>
-                      <destFileName>jre.jar</destFileName>
-                    </artifactItem>
-                    <artifactItem>
-                      <groupId>com.vertispan.j2cl</groupId>
-                      <artifactId>gwt-internal-annotations</artifactId>
-                      <version>0.1-SNAPSHOT</version>
-                      <destFileName>gwt-internal-annotations.jar</destFileName>
-                    </artifactItem>
-                    <artifactItem>
-                      <groupId>com.vertispan.j2cl</groupId>
-                      <artifactId>bootstrap</artifactId>
-                      <version>0.1-SNAPSHOT</version>
-                      <classifier>jszip</classifier>
-                      <type>zip</type>
-                      <destFileName>bootstrap.js.zip</destFileName>
-                    </artifactItem>
-                  </artifactItems>
-                </configuration>
-              </execution>
+          <!--<plugin>-->
+            <!--<groupId>org.apache.maven.plugins</groupId>-->
+            <!--<artifactId>maven-dependency-plugin</artifactId>-->
+            <!--<version>3.0.2</version>-->
+            <!--<executions>-->
+              <!--<execution>-->
+                <!--<id>build-java-classpath</id>-->
+                <!--<phase>process-classes</phase>-->
+                <!--<goals>-->
+                  <!--<goal>build-classpath</goal>-->
+                <!--</goals>-->
+                <!--<configuration>-->
+                  <!--<includeTypes>jar</includeTypes>-->
+                  <!--<outputProperty>java-classpath</outputProperty>-->
+                <!--</configuration>-->
+              <!--</execution>-->
+              <!--<execution>-->
+                <!--<id>copy-bootstrap</id>-->
+                <!--<goals>-->
+                  <!--<goal>copy</goal>-->
+                <!--</goals>-->
+                <!--<configuration>-->
+                  <!--&lt;!&ndash;<artifact>com.vertispan.j2cl:bootstrap:0.1-SNAPSHOT:zip:jszip</artifact>&ndash;&gt;-->
+                  <!--<artifactItems>-->
+                    <!--<artifactItem>-->
+                      <!--<groupId>com.vertispan.j2cl</groupId>-->
+                      <!--<artifactId>jre</artifactId>-->
+                      <!--<version>0.1-SNAPSHOT</version>-->
+                      <!--<classifier>jszip</classifier>-->
+                      <!--<type>zip</type>-->
+                      <!--<destFileName>jre.js.zip</destFileName>-->
+                    <!--</artifactItem>-->
+                    <!--<artifactItem>-->
+                      <!--<groupId>com.vertispan.j2cl</groupId>-->
+                      <!--<artifactId>jre</artifactId>-->
+                      <!--<version>0.1-SNAPSHOT</version>-->
+                      <!--<destFileName>jre.jar</destFileName>-->
+                    <!--</artifactItem>-->
+                    <!--<artifactItem>-->
+                      <!--<groupId>com.vertispan.j2cl</groupId>-->
+                      <!--<artifactId>gwt-internal-annotations</artifactId>-->
+                      <!--<version>0.1-SNAPSHOT</version>-->
+                      <!--<destFileName>gwt-internal-annotations.jar</destFileName>-->
+                    <!--</artifactItem>-->
+                    <!--<artifactItem>-->
+                      <!--<groupId>com.vertispan.j2cl</groupId>-->
+                      <!--<artifactId>bootstrap</artifactId>-->
+                      <!--<version>0.1-SNAPSHOT</version>-->
+                      <!--<classifier>jszip</classifier>-->
+                      <!--<type>zip</type>-->
+                      <!--<destFileName>bootstrap.js.zip</destFileName>-->
+                    <!--</artifactItem>-->
+                  <!--</artifactItems>-->
+                <!--</configuration>-->
+              <!--</execution>-->
 
-            </executions>
-          </plugin>
+            <!--</executions>-->
+          <!--</plugin>-->
           <!--<plugin>-->
             <!--<groupId>org.codehaus.mojo</groupId>-->
             <!--<artifactId>exec-maven-plugin</artifactId>-->
