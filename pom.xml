@@ -7,7 +7,7 @@
   <groupId>com.vertispan.draw</groupId>
   <artifactId>connected</artifactId>
   <version>0.1-SNAPSHOT</version>
-  <packaging>jar</packaging>
+  <packaging>war</packaging>
   <name>Connected</name>
   <description>Simple Graphs and Flowcharts in GWT</description>
   <organization>
@@ -19,6 +19,8 @@
   <properties>
     <java.version>1.8</java.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <webappdir>${project.build.directory}/webapp</webappdir>
+    <webapp.libdir>${webappdir}/WEB-INF/lib</webapp.libdir>
   </properties>
 
   <dependencies>
@@ -94,102 +96,6 @@
           </execution>
         </executions>
       </plugin>
-
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-dependency-plugin</artifactId>
-        <version>3.0.2</version>
-        <executions>
-          <execution>
-            <id>build-java-classpath</id>
-            <phase>process-classes</phase>
-            <goals>
-              <goal>build-classpath</goal>
-            </goals>
-            <configuration>
-              <includeTypes>jar</includeTypes>
-              <outputProperty>java-classpath</outputProperty>
-            </configuration>
-          </execution>
-          <execution>
-            <id>copy-bootstrap</id>
-            <goals>
-              <goal>copy</goal>
-            </goals>
-            <configuration>
-              <!--<artifact>com.vertispan.j2cl:bootstrap:0.1-SNAPSHOT:zip:jszip</artifact>-->
-              <artifactItems>
-                <artifactItem>
-                  <groupId>com.vertispan.j2cl</groupId>
-                  <artifactId>jre</artifactId>
-                  <version>0.2-SNAPSHOT</version>
-                  <classifier>jszip</classifier>
-                  <type>zip</type>
-                  <destFileName>jre.js.zip</destFileName>
-                </artifactItem>
-                <artifactItem>
-                  <groupId>com.vertispan.j2cl</groupId>
-                  <artifactId>jre</artifactId>
-                  <version>0.2-SNAPSHOT</version>
-                  <destFileName>jre.jar</destFileName>
-                </artifactItem>
-                <artifactItem>
-                  <groupId>com.vertispan.j2cl</groupId>
-                  <artifactId>gwt-internal-annotations</artifactId>
-                  <version>0.2-SNAPSHOT</version>
-                  <destFileName>gwt-internal-annotations.jar</destFileName>
-                </artifactItem>
-                <artifactItem>
-                  <groupId>com.vertispan.j2cl</groupId>
-                  <artifactId>bootstrap</artifactId>
-                  <version>0.2-SNAPSHOT</version>
-                  <classifier>jszip</classifier>
-                  <type>zip</type>
-                  <destFileName>bootstrap.js.zip</destFileName>
-                </artifactItem>
-              </artifactItems>
-            </configuration>
-          </execution>
-
-        </executions>
-      </plugin>
-
-      <plugin>
-        <groupId>org.eclipse.jetty</groupId>
-        <artifactId>jetty-maven-plugin</artifactId>
-        <version>9.4.9.v20180320</version>
-        <configuration>
-          <webApp>
-            <contextPath>/</contextPath>
-            <descriptor>${project.basedir}/src/main/webapp/WEB-INF/web.xml</descriptor>
-          </webApp>
-          <reload>automatic</reload>
-          <scanIntervalSeconds>1</scanIntervalSeconds>
-        </configuration>
-      </plugin>
-      <plugin>
-        <groupId>net.cardosi</groupId>
-        <artifactId>j2cl-maven-plugin</artifactId>
-        <version>0.2-SNAPSHOT</version>
-        <executions>
-          <execution>
-            <id>run-devmode</id>
-            <phase>process-classes</phase>
-            <goals>
-              <goal>build</goal>
-            </goals>
-          </execution>
-        </executions>
-        <configuration>
-          <bytecodeClasspath>${java-classpath}:${project.build.directory}/dependency/jre.jar:${project.build.directory}/dependency/gwt-internal-annotations.jar</bytecodeClasspath>
-          <j2clClasspath>${project.build.directory}/dependency/bootstrap.js.zip:${project.build.directory}/dependency/jre.js.zip</j2clClasspath>
-          <outputJsPathDir>out</outputJsPathDir>
-          <sourceDir>src/main/java</sourceDir>
-          <jsZipCacheDir>jsZipCache</jsZipCacheDir>
-          <entrypoint>com.vertispan.draw.connected.client.FlowChartEntryPoint</entrypoint>
-        </configuration>
-      </plugin>
-
     </plugins>
 
   </build>
@@ -212,6 +118,129 @@
       <id>devmode</id>
       <build>
         <defaultGoal>process-classes</defaultGoal>
+        <resources>
+          <resource>
+            <directory>src/main/webapp</directory>
+            <targetPath>${webappdir}</targetPath>
+          </resource>
+        </resources>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-compiler-plugin</artifactId>
+            <configuration>
+              <outputDirectory>${webappdir}/classes</outputDirectory>
+            </configuration>
+          </plugin>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-dependency-plugin</artifactId>
+            <version>3.0.2</version>
+            <executions>
+              <execution>
+                <id>build-java-classpath</id>
+                <phase>process-classes</phase>
+                <goals>
+                  <goal>build-classpath</goal>
+                </goals>
+                <configuration>
+                  <includeTypes>jar</includeTypes>
+                  <outputProperty>java-classpath</outputProperty>
+                </configuration>
+              </execution>
+              <execution>
+                <id>copy-bootstrap</id>
+                <goals>
+                  <goal>copy</goal>
+                </goals>
+                <configuration>
+                  <outputDirectory>${webappdir}/WEB-INF/lib</outputDirectory>
+                  <artifactItems>
+                    <artifactItem>
+                      <groupId>com.vertispan.j2cl</groupId>
+                      <artifactId>jre</artifactId>
+                      <version>0.2-SNAPSHOT</version>
+                      <classifier>jszip</classifier>
+                      <type>zip</type>
+                      <destFileName>jre.js.zip</destFileName>
+                    </artifactItem>
+                    <artifactItem>
+                      <groupId>com.vertispan.j2cl</groupId>
+                      <artifactId>jre</artifactId>
+                      <version>0.2-SNAPSHOT</version>
+                      <destFileName>jre.jar</destFileName>
+                    </artifactItem>
+                    <artifactItem>
+                      <groupId>com.vertispan.j2cl</groupId>
+                      <artifactId>gwt-internal-annotations</artifactId>
+                      <version>0.2-SNAPSHOT</version>
+                      <destFileName>gwt-internal-annotations.jar</destFileName>
+                    </artifactItem>
+                    <artifactItem>
+                      <groupId>com.vertispan.j2cl</groupId>
+                      <artifactId>bootstrap</artifactId>
+                      <version>0.2-SNAPSHOT</version>
+                      <classifier>jszip</classifier>
+                      <type>zip</type>
+                      <destFileName>bootstrap.js.zip</destFileName>
+                    </artifactItem>
+                  </artifactItems>
+                </configuration>
+              </execution>
+
+            </executions>
+          </plugin>
+          <plugin>
+            <groupId>org.eclipse.jetty</groupId>
+            <artifactId>jetty-maven-plugin</artifactId>
+            <version>9.4.14.v20181114</version>
+            <configuration>
+              <webApp>
+                <contextPath>/</contextPath>
+                <resourceBases>
+                  ${webappdir}
+                </resourceBases>
+                <descriptor>${webappdir}/WEB-INF/web.xml</descriptor>
+              </webApp>
+              <reload>automatic</reload>
+              <scanIntervalSeconds>1</scanIntervalSeconds>
+            </configuration>
+            <executions>
+              <execution>
+                <id>start-jetty</id>
+                <phase>compile</phase>
+                <goals>
+                  <goal>start</goal>
+                </goals>
+                <configuration>
+                  <scanIntervalSeconds>0</scanIntervalSeconds>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <groupId>net.cardosi</groupId>
+            <artifactId>j2cl-maven-plugin</artifactId>
+            <version>0.2-SNAPSHOT</version>
+            <executions>
+              <execution>
+                <id>run-devmode</id>
+                <phase>process-classes</phase>
+                <goals>
+                  <goal>build</goal>
+                </goals>
+              </execution>
+            </executions>
+            <configuration>
+              <bytecodeClasspath>${java-classpath}:${webapp.libdir}/jre.jar:${webapp.libdir}/gwt-internal-annotations.jar</bytecodeClasspath>
+              <j2clClasspath>${webapp.libdir}/bootstrap.js.zip:${webapp.libdir}/jre.js.zip</j2clClasspath>
+              <outputJsPathDir>${webappdir}/js</outputJsPathDir>
+              <sourceDir>src/main/java</sourceDir>
+              <jsZipCacheDir>jsZipCache</jsZipCacheDir>
+              <entrypoint>com.vertispan.draw.connected.client.FlowChartEntryPoint</entrypoint>
+            </configuration>
+          </plugin>
+        </plugins>
       </build>
     </profile>
   </profiles>
@@ -221,14 +250,22 @@
       <id>vertispan-releases</id>
       <name>Vertispan hosted artifacts-releases</name>
       <url>https://repo.vertispan.com/j2cl</url>
-      <releases><enabled>true</enabled></releases>
-      <snapshots><enabled>true</enabled></snapshots>
+      <releases>
+        <enabled>true</enabled>
+      </releases>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
     </repository>
     <repository>
       <id>vertispan-gwt-snapshots</id>
       <url>https://repo.vertispan.com/gwt-snapshot/</url>
-      <releases><enabled>false</enabled></releases>
-      <snapshots><enabled>true</enabled></snapshots>
+      <releases>
+        <enabled>false</enabled>
+      </releases>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
     </repository>
   </repositories>
   <pluginRepositories>
@@ -236,8 +273,12 @@
       <id>vertispan-releases</id>
       <name>Vertispan hosted artifacts-releases</name>
       <url>https://repo.vertispan.com/j2cl</url>
-      <releases><enabled>true</enabled></releases>
-      <snapshots><enabled>true</enabled></snapshots>
+      <releases>
+        <enabled>true</enabled>
+      </releases>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
     </pluginRepository>
   </pluginRepositories>
 </project>
