@@ -2,9 +2,9 @@ package com.vertispan.draw.connected.client;
 
 /*
  * #%L
- * connected
+ * Connected
  * %%
- * Copyright (C) 2017 Vertispan
+ * Copyright (C) 2017 - 2018 Vertispan
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
