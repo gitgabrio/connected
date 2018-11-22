@@ -4,7 +4,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-  <groupId>com.vertispan.draw</groupId>
+  <groupId>net.cardosi.draw</groupId>
   <artifactId>connected</artifactId>
   <version>0.1-SNAPSHOT</version>
   <packaging>war</packaging>
@@ -187,7 +187,6 @@
                   </artifactItems>
                 </configuration>
               </execution>
-
             </executions>
           </plugin>
           <plugin>
@@ -219,7 +218,7 @@
             </executions>
           </plugin>
           <plugin>
-            <groupId>net.cardosi</groupId>
+            <groupId>net.cardosi.j2cl</groupId>
             <artifactId>j2cl-maven-plugin</artifactId>
             <version>0.2-SNAPSHOT</version>
             <executions>
