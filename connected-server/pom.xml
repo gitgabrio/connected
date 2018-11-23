@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <parent>
+    <artifactId>connected</artifactId>
+    <groupId>net.cardosi.draw</groupId>
+    <version>0.1-SNAPSHOT</version>
+  </parent>
+  <modelVersion>4.0.0</modelVersion>
+
+  <artifactId>connected-server</artifactId>
+  <packaging>war</packaging>
+
+  <properties>
+    <webappdir>${project.build.directory}/webapp</webappdir>
+    <webapp.libdir>${webappdir}/WEB-INF/lib</webapp.libdir>
+  </properties>
+
+  <profiles>
+    <profile>
+      <id>devmode</id>
+      <build>
+        <defaultGoal>process-classes</defaultGoal>
+        <resources>
+          <resource>
+            <directory>${project.basedir}/src/main/webapp</directory>
+            <targetPath>${webappdir}</targetPath>
+          </resource>
+        </resources>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-compiler-plugin</artifactId>
+            <configuration>
+              <outputDirectory>${webappdir}/classes</outputDirectory>
+            </configuration>
+          </plugin>
+          <plugin>
+            <groupId>org.eclipse.jetty</groupId>
+            <artifactId>jetty-maven-plugin</artifactId>
+            <version>9.4.14.v20181114</version>
+            <configuration>
+              <webApp>
+                <contextPath>/</contextPath>
+                <resourceBases>
+                  ${webappdir}
+                </resourceBases>
+                <descriptor>${webappdir}/WEB-INF/web.xml</descriptor>
+              </webApp>
+              <reload>automatic</reload>
+              <scanIntervalSeconds>1</scanIntervalSeconds>
+            </configuration>
+            <executions>
+              <execution>
+                <id>start-jetty</id>
+                <phase>compile</phase>
+                <goals>
+                  <goal>start</goal>
+                </goals>
+                <configuration>
+                  <httpConnector>
+                    <port>8888</port>
+                  </httpConnector>
+                  <scanIntervalSeconds>0</scanIntervalSeconds>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
+
+</project>
