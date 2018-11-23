@@ -17,6 +17,19 @@
     <webapp.libdir>${webappdir}/WEB-INF/lib</webapp.libdir>
   </properties>
 
+  <dependencies>
+    <dependency>
+      <groupId>net.cardosi.draw</groupId>
+      <artifactId>connected-shared</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>javax.servlet</groupId>
+      <artifactId>javax.servlet-api</artifactId>
+      <version>3.1.0</version>
+    </dependency>
+  </dependencies>
+
   <profiles>
     <profile>
       <id>devmode</id>
@@ -33,7 +46,7 @@
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-compiler-plugin</artifactId>
             <configuration>
-              <outputDirectory>${webappdir}/classes</outputDirectory>
+              <outputDirectory>${webappdir}/WEB-INF/classes</outputDirectory>
             </configuration>
           </plugin>
           <plugin>
@@ -59,9 +72,6 @@
                   <goal>start</goal>
                 </goals>
                 <configuration>
-                  <httpConnector>
-                    <port>8888</port>
-                  </httpConnector>
                   <scanIntervalSeconds>0</scanIntervalSeconds>
                 </configuration>
               </execution>

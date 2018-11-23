@@ -22,7 +22,7 @@
     <dependency>
       <groupId>net.cardosi.draw</groupId>
       <artifactId>connected-shared</artifactId>
-      <version>0.1-SNAPSHOT</version>
+      <version>${project.version}</version>
     </dependency>
   </dependencies>
 
@@ -36,7 +36,7 @@
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-compiler-plugin</artifactId>
             <configuration>
-              <outputDirectory>${webappdir}/classes</outputDirectory>
+              <outputDirectory>${webappdir}/WEB-INF/classes</outputDirectory>
             </configuration>
           </plugin>
           <plugin>

@@ -20,26 +20,45 @@ package com.vertispan.draw.connected.client.lib;
  * #L%
  */
 
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.function.BiConsumer;
+import java.util.function.BiFunction;
+import java.util.function.Function;
+
 import com.vertispan.draw.connected.client.blank.SelectionEvent;
 import com.vertispan.draw.connected.client.blank.SelectionEvent.HasSelectionHandlers;
 import com.vertispan.draw.connected.client.blank.SelectionEvent.SelectionHandler;
 import com.vertispan.draw.connected.client.blank.StyleInjector;
 import com.vertispan.draw.connected.client.lib.DragTracker.DragHandling;
-import elemental2.dom.*;
+import com.vertispan.draw.connected.shared.data.IsParentRelationship;
+import elemental2.core.Global;
+import elemental2.dom.CanvasRenderingContext2D;
 import elemental2.dom.CanvasRenderingContext2D.FillStyleUnionType;
 import elemental2.dom.CanvasRenderingContext2D.StrokeStyleUnionType;
+import elemental2.dom.ClientRect;
+import elemental2.dom.DomGlobal;
 import elemental2.dom.Element;
 import elemental2.dom.Event;
+import elemental2.dom.HTMLButtonElement;
+import elemental2.dom.HTMLCanvasElement;
+import elemental2.dom.HTMLLabelElement;
+import elemental2.dom.MouseEvent;
+import elemental2.dom.NodeList;
+import elemental2.dom.Request;
+import elemental2.dom.RequestInit;
+import elemental2.dom.Response;
+import jsinterop.base.Js;
+import jsinterop.base.JsPropertyMap;
 import org.gwtproject.event.shared.EventBus;
 import org.gwtproject.event.shared.HandlerRegistration;
 import org.gwtproject.event.shared.SimpleEventBus;
 
-import java.util.*;
-import java.util.function.BiConsumer;
-import java.util.function.BiFunction;
-import java.util.function.Function;
-
 import static elemental2.dom.DomGlobal.document;
+import static elemental2.dom.DomGlobal.fetch;
 
 /**
  * Base "widget" for this project. Not a GWT Widget, but wraps a dom element
@@ -68,11 +87,19 @@ public class ConnectedComponent<B, L> implements HasSelectionHandlers<B> {
     private HTMLButtonElement drawBoxTool;
     private HTMLButtonElement drawLineTool;
     private HTMLButtonElement moveTool;
+    private HTMLButtonElement remoteServiceTool;
+    private HTMLLabelElement statusLabel;
     private Element canvasWrapper;
     private HTMLCanvasElement canvas;
 
     //logic
-    public enum DrawMode {MOVE, DRAW_BOX, DRAW_LINE};
+    public enum DrawMode {
+        MOVE,
+        DRAW_BOX,
+        DRAW_LINE
+    }
+
+    ;
     private DrawMode drawMode;
 
     //wiring
@@ -91,7 +118,6 @@ public class ConnectedComponent<B, L> implements HasSelectionHandlers<B> {
     private DragTracker dragTracker = new DragTracker();
     private B startingBoxForNewLine;
     private Point currentEndForNewLine;
-
 
     public ConnectedComponent(Function<B, String> boxIdFunct, Function<B, Rect> boxPosFunct, Function<Rect, B> boxCreator, Function<B, String> boxTextFunct, BiConsumer<B, Rect> boxPositionUpdater, Function<L, String> startFunct, Function<L, String> endFunct, BiFunction<B, B, L> lineCreator) {
         this.boxIdFunct = boxIdFunct;
@@ -123,9 +149,15 @@ public class ConnectedComponent<B, L> implements HasSelectionHandlers<B> {
         moveTool.innerHTML = "Move";
         moveTool.className = "button";
 
+        remoteServiceTool = (HTMLButtonElement) document.createElement("button");
+        remoteServiceTool.onclick = this::callService;
+        remoteServiceTool.innerHTML = "Remote call";
+        remoteServiceTool.className = "button";
+
+        statusLabel = (HTMLLabelElement) document.createElement("label");
+
         canvasWrapper = document.createElement("div");
         canvasWrapper.className = "canvas-wrapper";
-
 
         canvas = (HTMLCanvasElement) document.createElement("canvas");
 //        canvas.width = 1000;
@@ -136,6 +168,8 @@ public class ConnectedComponent<B, L> implements HasSelectionHandlers<B> {
         buttonBar.appendChild(drawBoxTool);
         buttonBar.appendChild(drawLineTool);
         buttonBar.appendChild(moveTool);
+        buttonBar.appendChild(remoteServiceTool);
+        buttonBar.appendChild(statusLabel);
         root.appendChild(buttonBar);
         canvasWrapper.appendChild(canvas);
         root.appendChild(canvasWrapper);
@@ -143,19 +177,18 @@ public class ConnectedComponent<B, L> implements HasSelectionHandlers<B> {
         setDrawMode(DrawMode.MOVE);
 
         StyleInjector.inject("html,body{width:100%;height:100%;margin:0;}\n" +
-                "body { display: flex; }\n" +
-                "\n" +
-                "\n" +
-                ".button { background-color: white; }\n" +
-                "button.button-on { background-color:gray; }\n" +
-                "\n" +
-                ".boxes-and-lines { display: flex; flex-flow: row nowrap; align-items: stretch; flex: 1 1 auto; }\n" +
-                "\n" +
-                ".button-bar { flex: 0 1 auto; }\n" +
-                ".button-bar button {display:block}\n" +
-                "\n" +
-                ".canvas-wrapper { flex: 1 1 auto; overflow: hidden; }");
-
+                                     "body { display: flex; }\n" +
+                                     "\n" +
+                                     "\n" +
+                                     ".button { background-color: white; }\n" +
+                                     "button.button-on { background-color:gray; }\n" +
+                                     "\n" +
+                                     ".boxes-and-lines { display: flex; flex-flow: row nowrap; align-items: stretch; flex: 1 1 auto; }\n" +
+                                     "\n" +
+                                     ".button-bar { flex: 0 1 auto; }\n" +
+                                     ".button-bar button {display:block}\n" +
+                                     "\n" +
+                                     ".canvas-wrapper { flex: 1 1 auto; overflow: hidden; }");
 
         //TODO this will leak after widget is detached...
         DomGlobal.window.addEventListener("resize", event -> scheduleFrame());
@@ -168,7 +201,6 @@ public class ConnectedComponent<B, L> implements HasSelectionHandlers<B> {
     public HandlerRegistration addSelectionHandler(SelectionHandler<B> selectionHandler) {
         return handlerManager.addHandler(SelectionEvent.getType(), selectionHandler);
     }
-
 
     public void fireEvent(SelectionEvent<B> gwtEvent) {
         handlerManager.fireEvent(gwtEvent);
@@ -197,7 +229,6 @@ public class ConnectedComponent<B, L> implements HasSelectionHandlers<B> {
                     break;
             }
 
-
             //actually set the current draw mode, so later mouse operations make sense
             this.drawMode = drawMode;
         }
@@ -207,12 +238,31 @@ public class ConnectedComponent<B, L> implements HasSelectionHandlers<B> {
         setDrawMode(DrawMode.DRAW_BOX);
         return null;
     }
+
     private Void drawLine(Event event) {
         setDrawMode(DrawMode.DRAW_LINE);
         return null;
     }
+
     private Void move(Event event) {
         setDrawMode(DrawMode.MOVE);
+        return null;
+    }
+
+    private Void callService(Event event) {
+        RequestInit requestInit = RequestInit.create();
+        requestInit.setMethod("get");
+        String url = "http://localhost:8080/app/greet?id=1";
+        fetch(new Request(url, requestInit))
+                .then(Response::json)
+                .then(response -> {
+                    IsParentRelationship isParentRelationship = new IsParentRelationship();
+                    JsPropertyMap<String> parse = Js.cast(Global.JSON.parse(Global.JSON.stringify(response)));
+                    isParentRelationship.setParentId(parse.get("parentid"));
+                    isParentRelationship.setChildId(parse.get("childid"));
+                    statusLabel.textContent = isParentRelationship.getParentId() + " ->" + isParentRelationship.getChildId();
+                    return null;
+                });
         return null;
     }
 
@@ -324,6 +374,7 @@ public class ConnectedComponent<B, L> implements HasSelectionHandlers<B> {
         lines.add(line);
         scheduleFrame();
     }
+
     public void removeLine(L line) {
         lines.remove(line);
         scheduleFrame();
@@ -334,12 +385,14 @@ public class ConnectedComponent<B, L> implements HasSelectionHandlers<B> {
         boxes.put(id, box);
         scheduleFrame();
     }
+
     public void removeBox(B box) {
         String id = boxIdFunct.apply(box);
         boxes.remove(id);
         lines.removeIf(line -> startFunct.apply(line).equals(id) || endFunct.apply(line).equals(id));
         scheduleFrame();
     }
+
     public void updateBox(B box) {
         String id = boxIdFunct.apply(box);
         boxes.put(id, box);
@@ -350,12 +403,13 @@ public class ConnectedComponent<B, L> implements HasSelectionHandlers<B> {
     public List<B> getBoxes() {
         return new ArrayList<>(boxes.values());
     }
+
     public List<L> getLines() {
         return new ArrayList<>(lines);
     }
 
-
     private boolean frameScheduled = false;
+
     private void scheduleFrame() {
         if (frameScheduled) {
             return;
@@ -366,6 +420,7 @@ public class ConnectedComponent<B, L> implements HasSelectionHandlers<B> {
             draw();
         });
     }
+
     private void draw() {
         //casts to get context, bug in elemental2 beta...
         final CanvasRenderingContext2D context = (CanvasRenderingContext2D) (Object) canvas.getContext("2d");
@@ -380,7 +435,6 @@ public class ConnectedComponent<B, L> implements HasSelectionHandlers<B> {
 //            canvas.style.height = HeightUnionType.of(size.height + "px");
 //            canvas.style.width = WidthUnionType.of(size.height + "px");
         }
-
 
         //remove all current content
         //TODO in the future detect changes and apply a clip?
@@ -425,6 +479,5 @@ public class ConnectedComponent<B, L> implements HasSelectionHandlers<B> {
             }
             context.fillStyle = FillStyleUnionType.of("#ffffff");
         });
-
     }
 }
