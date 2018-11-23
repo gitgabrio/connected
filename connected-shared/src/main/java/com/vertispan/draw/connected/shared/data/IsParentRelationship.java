@@ -1,4 +1,4 @@
-package com.vertispan.draw.connected.client.data;
+package com.vertispan.draw.connected.shared.data;
 
 /*
  * #%L

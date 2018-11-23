@@ -12,9 +12,19 @@
   <artifactId>connected-client</artifactId>
 
   <properties>
-    <webappdir>${project.basedir}/../connected-server/target/webapp</webappdir>
+    <shareddir>${project.basedir}/../connected-shared</shareddir>
+    <serverdir>${project.basedir}/../connected-server</serverdir>
+    <webappdir>${serverdir}/target/webapp</webappdir>
     <webapp.libdir>${webappdir}/WEB-INF/lib</webapp.libdir>
   </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>net.cardosi.draw</groupId>
+      <artifactId>connected-shared</artifactId>
+      <version>0.1-SNAPSHOT</version>
+    </dependency>
+  </dependencies>
 
   <profiles>
     <profile>
@@ -103,7 +113,7 @@
               <bytecodeClasspath>${java-classpath}:${webapp.libdir}/jre.jar:${webapp.libdir}/gwt-internal-annotations.jar</bytecodeClasspath>
               <j2clClasspath>${webapp.libdir}/bootstrap.js.zip:${webapp.libdir}/jre.js.zip</j2clClasspath>
               <outputJsPathDir>${webappdir}/js</outputJsPathDir>
-              <sourceDir>${project.basedir}/src/main/java</sourceDir>
+              <sourceDir>${project.basedir}/src/main/java,${shareddir}/src/main/java</sourceDir>
               <jsZipCacheDir>${project.basedir}/jsZipCache</jsZipCacheDir>
               <entrypoint>com.vertispan.draw.connected.client.FlowChartEntryPoint</entrypoint>
             </configuration>

@@ -20,17 +20,17 @@ package com.vertispan.draw.connected.client;
  * #L%
  */
 
+import java.util.Date;
+
+import com.google.gwt.core.client.EntryPoint;
 import com.vertispan.draw.connected.client.blank.DateTimeFormat;
 import com.vertispan.draw.connected.client.blank.DateTimeFormat.PredefinedFormat;
-import com.google.gwt.core.client.EntryPoint;
-import com.vertispan.draw.connected.client.data.IsParentRelationship;
 import com.vertispan.draw.connected.client.data.Person;
 import com.vertispan.draw.connected.client.lib.ConnectedComponent;
 import com.vertispan.draw.connected.client.lib.Point;
 import com.vertispan.draw.connected.client.lib.Rect;
+import com.vertispan.draw.connected.shared.data.IsParentRelationship;
 import elemental2.dom.DomGlobal;
-
-import java.util.Date;
 
 /**
  * Demo app that uses the Connected module to edit some data
