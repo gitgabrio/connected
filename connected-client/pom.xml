@@ -40,63 +40,6 @@
             </configuration>
           </plugin>
           <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-dependency-plugin</artifactId>
-            <version>3.0.2</version>
-            <executions>
-              <execution>
-                <id>build-java-classpath</id>
-                <phase>process-classes</phase>
-                <goals>
-                  <goal>build-classpath</goal>
-                </goals>
-                <configuration>
-                  <includeTypes>jar</includeTypes>
-                  <outputProperty>java-classpath</outputProperty>
-                </configuration>
-              </execution>
-              <execution>
-                <id>copy-bootstrap</id>
-                <goals>
-                  <goal>copy</goal>
-                </goals>
-                <configuration>
-                  <outputDirectory>${webappdir}/WEB-INF/lib</outputDirectory>
-                  <artifactItems>
-                    <artifactItem>
-                      <groupId>com.vertispan.j2cl</groupId>
-                      <artifactId>jre</artifactId>
-                      <version>0.2-SNAPSHOT</version>
-                      <classifier>jszip</classifier>
-                      <type>zip</type>
-                      <destFileName>jre.js.zip</destFileName>
-                    </artifactItem>
-                    <artifactItem>
-                      <groupId>com.vertispan.j2cl</groupId>
-                      <artifactId>jre</artifactId>
-                      <version>0.2-SNAPSHOT</version>
-                      <destFileName>jre.jar</destFileName>
-                    </artifactItem>
-                    <artifactItem>
-                      <groupId>com.vertispan.j2cl</groupId>
-                      <artifactId>gwt-internal-annotations</artifactId>
-                      <version>0.2-SNAPSHOT</version>
-                      <destFileName>gwt-internal-annotations.jar</destFileName>
-                    </artifactItem>
-                    <artifactItem>
-                      <groupId>com.vertispan.j2cl</groupId>
-                      <artifactId>bootstrap</artifactId>
-                      <version>0.2-SNAPSHOT</version>
-                      <classifier>jszip</classifier>
-                      <type>zip</type>
-                      <destFileName>bootstrap.js.zip</destFileName>
-                    </artifactItem>
-                  </artifactItems>
-                </configuration>
-              </execution>
-            </executions>
-          </plugin>
-          <plugin>
             <groupId>net.cardosi.j2cl</groupId>
             <artifactId>j2cl-maven-plugin</artifactId>
             <version>0.2-SNAPSHOT</version>
@@ -110,12 +53,43 @@
               </execution>
             </executions>
             <configuration>
-              <bytecodeClasspath>${java-classpath}:${webapp.libdir}/jre.jar:${webapp.libdir}/gwt-internal-annotations.jar</bytecodeClasspath>
+              <bytecodeClasspath>${webapp.libdir}/jre.jar:${webapp.libdir}/gwt-internal-annotations.jar</bytecodeClasspath>
               <j2clClasspath>${webapp.libdir}/bootstrap.js.zip:${webapp.libdir}/jre.js.zip</j2clClasspath>
               <outputJsPathDir>${webappdir}/js</outputJsPathDir>
               <sourceDir>${project.basedir}/src/main/java,${shareddir}/src/main/java</sourceDir>
               <jsZipCacheDir>${project.basedir}/jsZipCache</jsZipCacheDir>
               <entrypoint>com.vertispan.draw.connected.client.FlowChartEntryPoint</entrypoint>
+              <outputDirectory>${webappdir}/WEB-INF/lib</outputDirectory>
+              <artifactItems>
+                <artifactItem>
+                  <groupId>com.vertispan.j2cl</groupId>
+                  <artifactId>jre</artifactId>
+                  <version>0.2-SNAPSHOT</version>
+                  <classifier>jszip</classifier>
+                  <type>zip</type>
+                  <destFileName>jre.js.zip</destFileName>
+                </artifactItem>
+                <artifactItem>
+                  <groupId>com.vertispan.j2cl</groupId>
+                  <artifactId>jre</artifactId>
+                  <version>0.2-SNAPSHOT</version>
+                  <destFileName>jre.jar</destFileName>
+                </artifactItem>
+                <artifactItem>
+                  <groupId>com.vertispan.j2cl</groupId>
+                  <artifactId>gwt-internal-annotations</artifactId>
+                  <version>0.2-SNAPSHOT</version>
+                  <destFileName>gwt-internal-annotations.jar</destFileName>
+                </artifactItem>
+                <artifactItem>
+                  <groupId>com.vertispan.j2cl</groupId>
+                  <artifactId>bootstrap</artifactId>
+                  <version>0.2-SNAPSHOT</version>
+                  <classifier>jszip</classifier>
+                  <type>zip</type>
+                  <destFileName>bootstrap.js.zip</destFileName>
+                </artifactItem>
+              </artifactItems>
             </configuration>
           </plugin>
         </plugins>
