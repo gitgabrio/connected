@@ -42,7 +42,7 @@
           <plugin>
             <groupId>net.cardosi.j2cl</groupId>
             <artifactId>j2cl-maven-plugin</artifactId>
-            <version>0.2-SNAPSHOT</version>
+            <version>0.2a-SNAPSHOT</version>
             <executions>
               <execution>
                 <id>run-devmode</id>
@@ -53,8 +53,14 @@
               </execution>
             </executions>
             <configuration>
-              <bytecodeClasspath>${webapp.libdir}/jre.jar:${webapp.libdir}/gwt-internal-annotations.jar</bytecodeClasspath>
-              <j2clClasspath>${webapp.libdir}/bootstrap.js.zip:${webapp.libdir}/jre.js.zip</j2clClasspath>
+              <bytecodeClasspath>
+                <param>${webapp.libdir}/jre.jar</param>
+                <param>${webapp.libdir}/gwt-internal-annotations.jar</param>
+              </bytecodeClasspath>
+              <j2clClasspath>
+                <param>${webapp.libdir}/bootstrap.js.zip</param>
+                <param>${webapp.libdir}/jre.js.zip</param>
+              </j2clClasspath>
               <outputJsPathDir>${webappdir}/js</outputJsPathDir>
               <sourceDir>${project.basedir}/src/main/java,${shareddir}/src/main/java</sourceDir>
               <jsZipCacheDir>${project.basedir}/jsZipCache</jsZipCacheDir>
