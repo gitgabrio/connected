@@ -80,6 +80,27 @@
         </plugins>
       </build>
     </profile>
+    <profile>
+      <id>singlebuild</id>
+      <build>
+        <defaultGoal>process-classes</defaultGoal>
+        <resources>
+          <resource>
+            <directory>${project.basedir}/src/main/webapp</directory>
+            <targetPath>${webappdir}</targetPath>
+          </resource>
+        </resources>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-compiler-plugin</artifactId>
+            <configuration>
+              <outputDirectory>${webappdir}/WEB-INF/classes</outputDirectory>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
   </profiles>
 
 </project>
