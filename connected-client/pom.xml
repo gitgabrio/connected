@@ -116,7 +116,7 @@
           <plugin>
             <groupId>net.cardosi.j2cl</groupId>
             <artifactId>j2cl-maven-plugin</artifactId>
-            <version>0.3-SNAPSHOT</version>
+            <version>0.4-SNAPSHOT</version>
             <executions>
               <execution>
                 <id>run-devmode</id>
